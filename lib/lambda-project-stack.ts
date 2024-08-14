@@ -87,6 +87,7 @@ export class LambdaProjectStack extends cdk.Stack {
       handler: Handler.FROM_IMAGE,
       // タイムアウトを指定する
       timeout: cdk.Duration.seconds(30),
+      memorySize: 2048,
       // ロールを指定する
       role: lambdaRole,
       // 環境変数を設定する

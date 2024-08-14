@@ -2,7 +2,12 @@ FROM public.ecr.aws/lambda/python:3.12
 
 COPY entrypoint.sh requirements.txt ./
 
+RUN dnf install -y make automake gcc gcc-c++ kernel-devel openssl-devel
+RUN curl https://sh.rustup.rs -sSf | bash -s -- -y
+ENV PATH="/root/.cargo/bin:$PATH"
+
 RUN python3.12 -m pip install -r requirements.txt -t .
+
 
 WORKDIR /tmp/var/task/
 WORKDIR /var/task/
@@ -10,7 +15,7 @@ WORKDIR /var/task/
 env ENTRYPOINT_HOME=/var/task
 env ENTRYPOINT_BIN_PYTHON=/var/lang/bin/python3.12
 env ENTRYPOINT_AWS_LAMBDA_RIE=/usr/local/bin/aws-lambda-rie
-env PYTHON_PATH=/var/task:/tmp/var/task/
+env EXTRA_PYTHON_PATH=/var/task:/tmp/var/task
 
 ENTRYPOINT [ "/bin/bash", "/var/task/entrypoint.sh" ]
 CMD [ "app.lambda_handler" ]

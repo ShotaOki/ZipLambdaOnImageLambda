@@ -3,7 +3,7 @@
 cd ${ENTRYPOINT_HOME}
 
 GET_FUNCTION_SERVICE_NAME="lambda"
-SOURCe_ZIP_FILE="/tmp/source.zip"
+SOURCE_ZIP_FILE="/tmp/source.zip"
 TEMPORARY_GET_FUNCTION_JSON="/tmp/temporary-get-function.json"
 
 jq_command='import json;
@@ -36,11 +36,13 @@ curl "https://${GET_FUNCTION_SERVICE_NAME}.${AWS_REGION}.amazonaws.com/2015-03-3
   --aws-sigv4 "aws:amz:${AWS_REGION}:${GET_FUNCTION_SERVICE_NAME}" \
   --user "${AWS_ACCESS_KEY_ID}:${AWS_SECRET_ACCESS_KEY}" > ${TEMPORARY_GET_FUNCTION_JSON}
 
-CODE_LOCATION=`${ENTRYPOINT_BIN_PYTHON} -c "${jq_command}" ${TEMPORARY_GET_FUNCTION_JSON} --query Code.Location --output ${SOURCe_ZIP_FILE}`
+CODE_LOCATION=`${ENTRYPOINT_BIN_PYTHON} -c "${jq_command}" ${TEMPORARY_GET_FUNCTION_JSON} --query Code.Location --output ${SOURCE_ZIP_FILE}`
 
-${ENTRYPOINT_BIN_PYTHON} -m zipfile --extract ${SOURCe_ZIP_FILE} /tmp/var/task/${LAMBDA_FUNCTION_ROOT}
+${ENTRYPOINT_BIN_PYTHON} -m zipfile --extract ${SOURCE_ZIP_FILE} /tmp/var/task/${LAMBDA_FUNCTION_ROOT}
 
 cd /tmp/var/task/${LAMBDA_FUNCTION_ROOT}
+
+export PYTHONPATH="${EXTRA_PYTHON_PATH}:${PYTHONPATH}"
 
 if [ -z "${AWS_LAMBDA_RUNTIME_API}" ]; then
   exec ${ENTRYPOINT_AWS_LAMBDA_RIE} ${ENTRYPOINT_BIN_PYTHON} -m awslambdaric $@

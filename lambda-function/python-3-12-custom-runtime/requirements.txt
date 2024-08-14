@@ -1,1 +1,4 @@
 boto3==1.34.160
+tokenizers==0.19.1
+ginza==5.2.0
+ja_ginza==5.2.0
