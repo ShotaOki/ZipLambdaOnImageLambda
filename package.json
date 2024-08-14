@@ -2,7 +2,7 @@
   "name": "docker-sam",
   "version": "0.1.0",
   "bin": {
-    "docker-sam": "bin/docker-sam.js"
+    "docker-sam": "bin/lambda-zip-on-docker.js"
   },
   "scripts": {
     "build": "tsc",
