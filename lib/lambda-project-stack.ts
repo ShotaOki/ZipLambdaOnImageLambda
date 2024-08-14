@@ -7,10 +7,12 @@ import {
   DynamicRuntime,
 } from "./lambda-execute-on-docker-lambda-stack";
 
+// もう一つのスタックから参照するパラメータを定義する
 interface LambdaProjectStackProps extends cdk.StackProps {
   runtime: Record<RuntimeDefines, DynamicRuntime>;
 }
 
+// ランタイムを読み込む
 function readRuntime(
   runtime: Record<RuntimeDefines, DynamicRuntime>,
   runtimeName: RuntimeDefines
@@ -36,10 +38,14 @@ export class LambdaProjectStack extends cdk.Stack {
     const stack = cdk.Stack.of(this);
 
     // ECRのリポジトリを取得する
-    const lambdaEcrRepository = Repository.fromRepositoryAttributes(this, id, {
-      repositoryName: python312Runtime.repositoryName,
-      repositoryArn: `arn:aws:ecr:${stack.region}:${stack.account}:repository/${python312Runtime.repositoryName}`,
-    });
+    const python312RuntimeRepository = Repository.fromRepositoryAttributes(
+      this,
+      "Python312RuntimeRepository",
+      {
+        repositoryName: python312Runtime.repositoryName,
+        repositoryArn: `arn:aws:ecr:${stack.region}:${stack.account}:repository/${python312Runtime.repositoryName}`,
+      }
+    );
 
     // Lambdaの実行ロールを定義する
     const lambdaRole = new cdk.aws_iam.Role(this, "LambdaRole", {
@@ -72,7 +78,7 @@ export class LambdaProjectStack extends cdk.Stack {
     // このLambdaを通して、ZipLambdaにあるソースを実行する
     new Function(this, "DockerLambdaFunction", {
       // LambdaのイメージをECRの共通イメージから参照する
-      code: Code.fromEcrImage(lambdaEcrRepository, {
+      code: Code.fromEcrImage(python312RuntimeRepository, {
         cmd: ["app.lambda_handler"],
         tag: python312Runtime.imageTag,
       }),
