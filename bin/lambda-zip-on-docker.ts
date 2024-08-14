@@ -18,6 +18,5 @@ new LambdaProjectStack(app, "LambdaProjectStack", {
     account: process.env.CDK_DEFAULT_ACCOUNT,
     region: process.env.CDK_DEFAULT_REGION,
   },
-  repositoryName: baseStack.repositoryName,
-  imageTag: baseStack.imageTag,
+  runtime: baseStack.runtime,
 });
