@@ -1,14 +1,25 @@
-# Welcome to your CDK TypeScript project
+# Docker Lambda で Zip Lambda を動かすサンプル
 
-This is a blank project for CDK development with TypeScript.
+## 環境構築
 
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
+- Docker が利用できる環境
+- Node.js が利用できる環境
+- CDK が利用できる環境
 
-## Useful commands
+## デプロイ
 
-* `npm run build`   compile typescript to js
-* `npm run watch`   watch for changes and compile
-* `npm run test`    perform the jest unit tests
-* `npx cdk deploy`  deploy this stack to your default AWS account/region
-* `npx cdk diff`    compare deployed stack with current state
-* `npx cdk synth`   emits the synthesized CloudFormation template
+DockerImage をデプロイする  
+※Docker がインストールされた環境で実行してください
+
+```
+cdk deploy LambdaExecuteOnDockerLambda
+```
+
+Docker Lambda をデプロイする  
+※Docker がインストールされていない環境（例：Windows）で実行して大丈夫です
+
+```
+cdk deploy LambdaProjectStack
+```
+
+※できるだけ分けてデプロイしてください。cdk deploy --all でもデプロイできますが、大きなイメージをデプロイしようとすると、デプロイの完了前に Docker Lambda をデプロイしようとして失敗することがあります
